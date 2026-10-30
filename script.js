@@ -1,18 +1,29 @@
-const INVERT_PROBABILITY = 0.5
+const INVERT_PROBABILITY = 0.5;
 
 // Track if mouse is being pressed
 let isMouseDown = false;
 
-// Add mouse down/up listeners to document
-document.addEventListener('mousedown', () => isMouseDown = true);
-document.addEventListener('mouseup', () => isMouseDown = false);
+// Add pointer down/up listeners to document
+document.addEventListener('pointerdown', () => {
+  isMouseDown = true;
+});
 
-// Add click handler to create the grid
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('pointerup', () => {
+  isMouseDown = false;
+});
 
-   // Get references to our elements
-const startButton = document.getElementById('start');
-const grid = document.getElementById('grid');
+document.addEventListener('pointercancel', () => {
+  isMouseDown = false;
+});
+
+function initGrid() {
+  const startButton = document.getElementById('start');
+  const grid = document.getElementById('grid');
+
+  // Guard against missing elements
+  if (!startButton || !grid) {
+    return;
+  }
 
   // Clear any existing grid first
   grid.innerHTML = '';
@@ -22,16 +33,17 @@ const grid = document.getElementById('grid');
     const cell = document.createElement('div');
     cell.className = 'cell';
 
-
-     
-    // Handle both click and drag events
-    cell.addEventListener('mousedown', () => {
+    // Click toggles the cell
+    cell.addEventListener('pointerdown', (event) => {
+      event.preventDefault();
       cell.classList.toggle('black');
+      isMouseDown = true;
     });
 
-    cell.addEventListener('mouseenter', () => {
+    // Dragging paints cells while pointer is down
+    cell.addEventListener('pointerenter', () => {
       if (isMouseDown) {
-        cell.classList.toggle('black');
+        cell.classList.add('black');
       }
     });
 
@@ -40,5 +52,11 @@ const grid = document.getElementById('grid');
 
   // Hide the start button after grid is created
   startButton.style.display = 'none';
-});
+}
 
+// Ensure the script runs after the DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initGrid);
+} else {
+  initGrid();
+}
