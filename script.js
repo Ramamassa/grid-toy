@@ -33,9 +33,19 @@ function initGrid() {
     const cell = document.createElement('div');
     cell.className = 'cell';
 
+Ramamassa-patch-1
+if (Math.random() < INVERT_PROBABILITY) {
+   cell.classes.add("black");
+}
+
+     
+    // Handle both click and drag events
+    cell.addEventListener('mousedown', () => {
+
     // Click toggles the cell
     cell.addEventListener('pointerdown', (event) => {
       event.preventDefault();
+main
       cell.classList.toggle('black');
       isMouseDown = true;
     });
